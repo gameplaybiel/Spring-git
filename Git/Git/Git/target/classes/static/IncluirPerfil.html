@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+    <title>Incluir um perfil do GitHub</title>
+</head>
+<body>
+  <h1>Buscar perfis no GitHub</h1>
+  <p>Seja bem-vindo ao site, esse site tem um objetivo simples: é só buscar um perfil que já existe no GitHub</p>
+  <p>Por favor, preencha um perfil já existente no GutHub</p>
+  <p>É possível encontrar qualquer perfis já existentes no GitHub.</p>
+  <input id="input-container" type="text" name="github_user" placeholder="Usuário GutHub" autofocus>
+  <button id="btn">Buscar</button>
+  <p>Gabriel de Souza Conceição</p>
+  <div id="app"></div>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    //Usando o código para autenciar o Git-Hub
+
+    let btn = document.querySelector('#btn');
+    let div = document.querySelector('#app');
+
+    btn.onclick = function(){
+      //Limpa a div
+      div.innerHTML = '';
+
+      //Criar o span
+       let spanNome = document.createElement('span');
+
+      //Criar a variável nome
+      let txtNome = '';
+
+      //Recupera o input
+      let github_user = document.querySelector('input[name=github_user]');
+      let user = github_user.value;
+
+      //Limpando o input
+      github_user.value = '';
+
+      //GET, POST. PUT, DELETE
+      axios.get(`https://api.github.com/users/${user}`)
+        .then(function(response){
+            if(response.data.name !== null){
+                txtNome = document.createTextNode(response.data.name);
+
+                let img = document.createElement('img');
+                img.setAttribute('src', response.data.avatar_url);
+                img.setAttribute('alt', response.data.name);
+                img.setAttribute('width', '200px');
+                img.setAttribute('height', '200px');
+
+                div.appendChild(img);
+            }else{
+                 txtNome = document.createTextNode('O usuário não possui nome');
+            }
+            //Adiciona o conteúdo da div
+            spanNome.appendChild(txtNome);
+            div.appendChild(spanNome);
+        })
+        .catch(function(error){
+            txtNome = document.createTextNode('Não foi possível realizar a requisição.');
+            //Adiciona o conteúdo na div
+            spanNome.appendChild(txtNome);
+            div.appendChild(spanNome);
+        });
+}
+  </script>
+</body>
+</html>
